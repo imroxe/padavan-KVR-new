@@ -46,6 +46,23 @@ echo 1800     > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_established
 echo 30       > /proc/sys/net/netfilter/nf_conntrack_icmp_timeout
 echo 50       > /proc/sys/net/netfilter/nf_conntrack_udp_timeout
 
+# BT PT PCDN 连接数优化，from：https://www.right.com.cn/forum/thread-7273870-1-1.html
+#echo 0 > /proc/sys/net/netfilter/nf_conntrack_checksum
+#echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal
+#echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_loose
+#echo 10 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_syn_sent
+#echo 10 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_syn_recv
+#echo 1800 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_established
+#echo 15 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_fin_wait
+#echo 15 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_close_wait
+#echo 15 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_last_ack
+#echo 15 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_time_wait
+#echo 15 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_close
+#echo 15 > /proc/sys/net/netfilter/nf_conntrack_udp_timeout
+#echo 120 > /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream
+#echo 15 > /proc/sys/net/netfilter/nf_conntrack_icmp_timeout
+#echo 600 > /proc/sys/net/netfilter/nf_conntrack_generic_timeout
+
 # panic
 echo 1        > /proc/sys/kernel/panic
 echo 1        > /proc/sys/kernel/panic_on_oops
