@@ -600,7 +600,7 @@ EOF
 dhcp-option=252,"\n"
 
 ### Set the limit on DHCP leases, the default is 150
-#dhcp-lease-max=150
+#dhcp-lease-max=600
 
 ### Add local-only domains, queries are answered from hosts or DHCP only
 #local=/router/localdomain/
@@ -627,9 +627,6 @@ dhcp-option=252,"\n"
 
 ### Cache size
 #cache-size=1000
-
-### Cache refresh time
-#dhcp-lease-max=600
 
 ### Enable cache cleaning feature
 #clean-pid=1
