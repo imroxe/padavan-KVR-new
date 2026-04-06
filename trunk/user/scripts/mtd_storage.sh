@@ -626,28 +626,28 @@ dhcp-option=252,"\n"
 #dhcp-to-host
 
 ### Cache size
-cache-size=1000
+#cache-size=1000
 
 ### Cache refresh time
-dhcp-lease-max=600
+#dhcp-lease-max=600
 
 ### Enable cache cleaning feature
-clean-pid=1
+#clean-pid=1
 
 ### Cache hit rate
-dns-forward-max=5
+#dns-forward-max=5
 
 ### Number of concurrent threads
-dhcp-threads=4
+#dhcp-threads=4
 
 ### DNS concurrent queries
-dns-forward-queries=all
+#dns-forward-queries=all
 
 ### Maximum concurrent queries
-max-concurrent-dns=150
+#max-concurrent-dns=150
 
 ### Concurrent connections
-dns-server-connections=10
+#dns-server-connections=10
 
 
 EOF
