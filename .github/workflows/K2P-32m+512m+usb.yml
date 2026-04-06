@@ -183,7 +183,7 @@ jobs:
         echo "CONFIG_FIRMWARE_ENABLE_EXT4=y" >> .config
         
         ##启用 XFS 文件系统支持。约 0.6MB
-        echo "CONFIG_FIRMWARE_ENABLE_XFS=n" >> .config 
+        echo "CONFIG_FIRMWARE_ENABLE_XFS=y" >> .config 
 
         ##启用 FUSE（用户空间文件系统）支持。约 0.1MB
         echo "CONFIG_FIRMWARE_ENABLE_FUSE=y" >> .config
