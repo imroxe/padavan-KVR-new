@@ -625,28 +625,6 @@ dhcp-option=252,"\n"
 ### Keep DHCP host name valid at any times
 #dhcp-to-host
 
-### Cache size
-#cache-size=1000
-
-### Enable cache cleaning feature
-#clean-pid=1
-
-### Cache hit rate
-#dns-forward-max=5
-
-### Number of concurrent threads
-#dhcp-threads=4
-
-### DNS concurrent queries
-#dns-forward-queries=all
-
-### Maximum concurrent queries
-#max-concurrent-dns=150
-
-### Concurrent connections
-#dns-server-connections=10
-
-
 EOF
 	if [ -f /usr/bin/vlmcsd ]; then
 		cat >> "$user_dnsmasq_conf" <<EOF
