@@ -209,6 +209,7 @@ func_fill()
 	script_ezbtn="$dir_storage/ez_buttons_script.sh"
 	script_gipv6="$dir_storage/getipv6.sh"
 	script_ipv6="$dir_storage/ipv6.sh"
+	script_rros="$dir_storage/rps-rfs-ops.sh"
 
 	user_hosts="$dir_dnsmasq/hosts"
 	user_dnsmasq_conf="$dir_dnsmasq/dnsmasq.conf"
@@ -298,6 +299,9 @@ https://ghproxy.net/
 #**************替换背景图片*******************
 ##挂载内存多少M，如果你觉得你tmp目录空间不够，可以去掉下方的#修改下方的50为你需要的大小，不可超出设备硬件内存大小##
  #mount -t tmpfs -o remount,rw,size=50M tmpfs /tmp
+
+# CPU利用率优化，来自：https://www.right.com.cn/forum/thread-4031767-1-1.html
+/etc/storage/rps-rfs-ops.sh set
  
 EOF
 		chmod 755 "$script_started"
@@ -326,21 +330,26 @@ EOF
 ### Called after internal iptables reconfig (firewall update)
 
 #wing resume
+
 #自动配置 POSTROUTING 的 MSS钳制,防止网络堵塞和数据丢失
 iptables -t mangle -A POSTROUTING ! -o br0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 ip6tables -t mangle -A POSTROUTING ! -o br0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+
 # 手动指定MSS
 #iptables -t mangle -A POSTROUTING ! -o br0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452
 #ip6tables -t mangle -A POSTROUTING ! -o br0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1432
+
 ### ipv6防火墙全关规则 以下把#去掉则关闭ip6防火墙 
 #ip6tables -F
 #ip6tables -X
 #ip6tables -P INPUT ACCEPT
 #ip6tables -P OUTPUT ACCEPT
 #ip6tables -P FORWARD ACCEPT
+
 ### ipv6防火墙单独规则 开放3389远程桌面 其它端口按下方规则添加 以下把#去掉则生效
 #ip6tables -I FORWARD -p tcp --dport 3389 -j ACCEPT
 #ip6tables -I FORWARD -p tcp --dport 8829 -j ACCEPT
+
 EOF
 		chmod 755 "$script_postf"
 	fi
@@ -389,6 +398,10 @@ if [ ! -f "$script_postw" ] ; then
 ### \$3 - WAN IPv4 address
 
 
+
+
+# CPU利用率优化，来自：https://www.right.com.cn/forum/thread-4031767-1-1.html
+/etc/storage/rps-rfs-ops.sh set
 
 
 EOF
@@ -526,6 +539,50 @@ EOF
 		chmod 755 "$script_ezbtn"
 	fi
 
+	# create rps-rfs-ops script
+	if [ ! -f "$script_rros" ] ; then
+		cat > "$script_rros" <<'EOF'
+#!/bin/sh
+
+set_rps_rfs() {
+    echo f >/proc/irq/11/smp_affinity
+    echo f >/proc/irq/12/smp_affinity
+
+    for device in $(ls /sys/class/net); do
+        echo f >/sys/class/net/$device/queues/rx-0/rps_cpus
+        echo 32768 >/sys/class/net/$device/queues/rx-0/rps_flow_cnt
+    done
+
+    echo 32768 >/proc/sys/net/core/rps_sock_flow_entries
+}
+
+get_rps_rfs() {
+    cat /proc/irq/11/smp_affinity
+    cat /proc/irq/12/smp_affinity
+
+    for device in $(ls /sys/class/net); do
+        printf "%-10s %-5s %-10s\n" "$device" "$(cat /sys/class/net/$device/queues/rx-0/rps_cpus)" "$(cat /sys/class/net/$device/queues/rx-0/rps_flow_cnt)"
+    done
+
+    cat /proc/sys/net/core/rps_sock_flow_entries
+}
+
+case $1 in
+get)
+    get_rps_rfs
+    ;;
+set)
+    set_rps_rfs
+    ;;
+*)
+    get_rps_rfs
+    ;;
+esac
+
+EOF
+		chmod 755 "$script_rros"
+	fi
+
 	# create user dnsmasq.conf
 	[ ! -d "$dir_dnsmasq" ] && mkdir -p -m 755 "$dir_dnsmasq"
 	for i in dnsmasq.conf hosts ; do
@@ -535,6 +592,9 @@ EOF
 		cat > "$user_dnsmasq_conf" <<EOF
 # Custom user conf file for dnsmasq
 # Please add needed params only!
+
+### Turn off this service
+#port=0
 
 ### Web Proxy Automatic Discovery (WPAD)
 dhcp-option=252,"\n"
@@ -564,6 +624,31 @@ dhcp-option=252,"\n"
 
 ### Keep DHCP host name valid at any times
 #dhcp-to-host
+
+### Cache size
+cache-size=1000
+
+### Cache refresh time
+dhcp-lease-max=600
+
+### Enable cache cleaning feature
+clean-pid=1
+
+### Cache hit rate
+dns-forward-max=5
+
+### Number of concurrent threads
+dhcp-threads=4
+
+### DNS concurrent queries
+dns-forward-queries=all
+
+### Maximum concurrent queries
+max-concurrent-dns=150
+
+### Concurrent connections
+dns-server-connections=10
+
 
 EOF
 	if [ -f /usr/bin/vlmcsd ]; then
