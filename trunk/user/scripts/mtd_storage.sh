@@ -3,7 +3,7 @@
 result=0
 mtd_part_name="Storage"
 mtd_part_dev="/dev/mtdblock5"
-mtd_part_size=65536
+mtd_part_size=19922944
 dir_storage="/etc/storage"
 slk="/tmp/.storage_locked"
 tmp="/tmp/storage.tar"
@@ -288,10 +288,10 @@ sync && echo 3 > /proc/sys/vm/drop_caches
 #**************github下载加速******************
 #建议自建加速，项目：https://github.com/hunshcn/gh-proxy
 #设置github加速下载镜像代理地址，失效请自行更换(按下方格式填写，每行一个，末尾加/)
-nvram set github_proxy="https://github.moeyy.xyz/
-https://gh.llkk.cc/
-https://mirror.ghproxy.com/
-https://ghproxy.net/
+nvram set github_proxy="https://ghfast.top/
+https://gh.catmak.name/
+https://gh-proxy.com/
+https://github.akams.cn/
 "
 #*************github下载加速******************
 #**************替换背景图片******************
@@ -600,7 +600,7 @@ EOF
 dhcp-option=252,"\n"
 
 ### Set the limit on DHCP leases, the default is 150
-#dhcp-lease-max=150
+#dhcp-lease-max=600
 
 ### Add local-only domains, queries are answered from hosts or DHCP only
 #local=/router/localdomain/
@@ -624,31 +624,6 @@ dhcp-option=252,"\n"
 
 ### Keep DHCP host name valid at any times
 #dhcp-to-host
-
-### Cache size
-cache-size=1000
-
-### Cache refresh time
-dhcp-lease-max=600
-
-### Enable cache cleaning feature
-clean-pid=1
-
-### Cache hit rate
-dns-forward-max=5
-
-### Number of concurrent threads
-dhcp-threads=4
-
-### DNS concurrent queries
-dns-forward-queries=all
-
-### Maximum concurrent queries
-max-concurrent-dns=150
-
-### Concurrent connections
-dns-server-connections=10
-
 
 EOF
 	if [ -f /usr/bin/vlmcsd ]; then
