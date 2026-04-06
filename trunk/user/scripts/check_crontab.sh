@@ -10,7 +10,7 @@ if [ ! -f "cron/crontabs/admin" ] || [ -z "$(cat cron/crontabs/admin |grep $6)" 
 	    echo "$exp /usr/bin/$6 > /dev/null 2>&1"
 		echo ""
 		echo "# update github host"
-		echo "0 9 * * * logger -t "【SmartDNS】" "准备更新github可访问ip" && /etc/storage/update-github-host.sh >/dev/null 2>&1"
+		echo "# 0 9 * * * logger -t "【SmartDNS】" "准备更新github可访问ip" && /etc/storage/update-github-host.sh >/dev/null 2>&1"
 		echo ""
 	} >> cron/crontabs/admin && exit 1
 fi
